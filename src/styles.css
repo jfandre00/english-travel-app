@@ -1,0 +1,65 @@
+/* Mobile-First */
+
+/* preciso criar variável para as cores, para não precisar ficar lembrando os códigos */
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f0f2f5;
+}
+
+@media (min-width: 768px) {
+  .app-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: rgba(255, 0, 0, 0.059);
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  }
+
+  .imgTeacher {
+    max-width: 250px;
+  }
+}
+
+.app-container {
+  text-align: center;
+  padding: 2rem;
+}
+
+.imgTeacher {
+  border-radius: 50%;
+  width: 30vw;
+}
+
+h2 {
+  color: #b30000;
+  text-decoration: underline;
+}
+
+.word-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.word-button {
+  padding: 0.75rem;
+  background-color: #007bff;
+  border: none;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.word-button:hover {
+  background-color: #b30000;
+}
+
+audio {
+  margin-top: 1.5rem;
+}

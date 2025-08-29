@@ -1,0 +1,92 @@
+/* Garante que nada ultrapasse a tela */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  overflow-x: hidden;
+  font-family: sans-serif;
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  background: #007bff;
+  color: white;
+  padding: 1rem;
+  z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0px 0px 5px #0056b3;
+}
+
+.logo {
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+/* Nav Mobile */
+.nav {
+  display: none;
+  flex-direction: column;
+  background: #007bff;
+  position: absolute;
+  top: 60px;
+  right: 1rem;
+  left: auto;
+  min-width: 150px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.nav.open {
+  display: flex;
+}
+
+.nav a {
+  padding: 1rem;
+  color: white;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  text-align: right;
+}
+
+.nav a:hover {
+  background-color: #0056b3;
+}
+
+.menu-toggle {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: white;
+  cursor: pointer;
+  z-index: 1001;
+}
+
+/* Tela maior */
+@media (min-width: 769px) {
+  .menu-toggle {
+    display: none;
+  }
+
+  .nav {
+    display: flex !important;
+    position: static;
+    flex-direction: row;
+    gap: 1rem;
+    box-shadow: none;
+  }
+
+  .nav a {
+    border: none;
+    padding: 0.5rem 1rem;
+    text-align: left;
+  }
+}

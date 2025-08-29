@@ -1,0 +1,27 @@
+h2 {
+  text-align: center;
+}
+
+.phrase-section {
+  margin-top: 2rem;
+  text-align: left;
+}
+
+.phrase-list {
+  list-style: none;
+  padding: 0;
+}
+
+.phrase-item {
+  background-color: #f7f7f7;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 0.75rem;
+  border-left: 5px solid #007bff;
+}
+
+.translation {
+  display: block;
+  margin-top: 0.25rem;
+  color: #555;
+}
