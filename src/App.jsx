@@ -1,16 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
 import "./styles.css";
 
+// Componentes
 import Login from "./components/Login";
-import WordList from "./components/WordList";
-import FlashcardGrid from "./components/FlashcardGrid";
-import PhraseList from "./components/PhraseList";
-import { restaurantPhrases, airportPhrases } from "./data/phrases";
-import ListeningGame from "./components/ListeningGame";
 import Header from "./components/Header";
-import FavoriteWords from "./components/FavoriteWords";
 
-// preciso implementar Firebase Authentication no próximo TP
+// Páginas
+import HomePage from "./pages/HomePage";
+import WordsPage from "./pages/WordsPage";
+import PhrasesPage from "./pages/PhrasesPage";
+import ListeningPage from "./pages/ListeningPage";
+
+// Dados
 import { authorizedUsers } from "./data/authorizedUsers";
 
 export default function App() {
@@ -18,6 +20,8 @@ export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [skipLogin, setSkipLogin] = useState(false);
   const [loginFailed, setLoginFailed] = useState(false);
+  const [isEditingFavorites, setIsEditingFavorites] = useState(false);
+  const favoriteWordsRef = useRef();
 
   const handleLogin = (name) => {
     const normalizedName = name.trim().toLowerCase();
@@ -39,10 +43,19 @@ export default function App() {
     setUsername("");
     setIsLoggedIn(false);
     setSkipLogin(false);
+    setIsEditingFavorites(false);
+  };
+
+  const handleToggleEditFavorites = () => {
+    if (isEditingFavorites) {
+      if (favoriteWordsRef.current) {
+        favoriteWordsRef.current.saveChanges();
+      }
+    }
+    setIsEditingFavorites((prev) => !prev);
   };
 
   if (!isLoggedIn && !skipLogin) {
-    // Tela de login.
     return (
       <Login
         onLogin={handleLogin}
@@ -52,15 +65,11 @@ export default function App() {
     );
   }
 
-  // Conteúdo principal
-  // ATENÇÃO: PRECISO REMOVER OS INLINES,AGORA QUE TERMINEI ESSA VERSÃO
-  // FAZER ISSO PARA O TP4 URGENTE, O CÓDIGO ESTÁ UMA BAGUNÇA
-  //------------------------------------------------
   return (
     <div className="app-container">
       <Header />
-      <div style={{ paddingTop: "50px" }}>
-        {/* Botão Voltar para tela de login aparece se usuário acessou sem login */}
+      <div style={{ paddingTop: "80px" }}>
+        
         {skipLogin && (
           <div style={{ textAlign: "center", marginBottom: "1rem" }}>
             <button
@@ -79,86 +88,72 @@ export default function App() {
           </div>
         )}
 
+        {isLoggedIn && (
+          <div
+            style={{
+              textAlign: "center",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: "1rem",
+              marginBottom: "1rem", // Diminuí um pouco a margem
+            }}
+          >
+            <p>
+              Bem-vindo,{" "}
+              <strong>
+                {username.charAt(0).toUpperCase() +
+                  username.slice(1).toLowerCase()}
+              </strong>
+              !
+            </p>
+            <button
+              onClick={handleLogout}
+              style={{
+                cursor: "pointer", padding: "0.3rem 0.7rem", borderRadius: "8px", border: "2px solid grey", backgroundColor: "#007bff", color: "white",
+              }}
+              title="Logout"
+            >
+              Logout
+            </button>
+            <button
+              onClick={handleToggleEditFavorites}
+              style={{
+                cursor: "pointer", padding: "0.3rem 0.7rem", borderRadius: "8px", border: "2px solid grey", backgroundColor: "#b30000", color: "white",
+              }}
+            >
+              {isEditingFavorites ? "Salvar Alterações" : "Remover Favoritas"}
+            </button>
+          </div>
+        )}
+
+        {/* CORREÇÃO: Imagem da professora adicionada de volta */}
         <img
           className="imgTeacher"
           src="https://teacherdenise.com/img/logo.JPG"
           alt="Teacher Denise Logo"
-          style={{ display: "block", margin: "0 auto" }}
+          style={{ display: "block", margin: "0 auto 1rem auto" }} // Adicionei margem inferior
         />
 
-        {isLoggedIn && (
-          <section id="favorite">
-            <hr style={{ margin: "2rem 0" }} />
-            <div
-              style={{
-                textAlign: "center",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                gap: "1rem",
-              }}
-            >
-              <p>
-                {/* Solução "gambiarra" - preciso pesquisar algo melhor para deixar a primeira maíscula
-                Mas talvez essa funcionalidade não exista na próxima versão 
-                Pois utilizarei o Google Firebase */}
-                Bem-vindo,{" "}
-                <strong>
-                  {username.charAt(0).toUpperCase() +
-                    username.slice(1).toLowerCase()}
-                </strong>
-                !
-              </p>
-              <button
-                onClick={handleLogout}
-                style={{
-                  cursor: "pointer",
-                  padding: "0.3rem 0.7rem",
-                  borderRadius: "8px",
-                  border: "2px solid grey",
-                  backgroundColor: "#007bff",
-                  color: "white",
-                }}
-                title="Logout"
-              >
-                Logout
-              </button>
-            </div>
-            <FavoriteWords currentUser={username} />
-          </section>
-        )}
-
-        <section id="words">
-          <hr style={{ margin: "2rem 0" }} />
-          <section id="flashcards">
-            <WordList />
-          </section>
-          <FlashcardGrid />
-        </section>
-
-        <section id="phrases">
-          <hr style={{ margin: "2rem 0" }} />
-          <p
-            style={{
-              padding: 20,
-              font: "sans-serif",
-              fontSize: 20,
-              fontWeight: "bolder",
-              color: "blue",
-              border: "2px solid red",
-              borderRadius: "5px",
-            }}
-          >
-            Frases Mais Comuns Em Cada Local
-          </p>
-          <PhraseList category="Restaurante" phrases={restaurantPhrases} />
-          <PhraseList category="Aeroporto" phrases={airportPhrases} />
-          <hr style={{ margin: "2rem 0" }} />
-        </section>
-
-        <section id="listening">
-          <ListeningGame />
-        </section>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              isLoggedIn ? (
+                <HomePage
+                  favoriteWordsRef={favoriteWordsRef}
+                  currentUser={username}
+                  isEditing={isEditingFavorites}
+                />
+              ) : (
+                <Navigate to="/words" replace />
+              )
+            }
+          />
+          <Route path="/words" element={<WordsPage />} />
+          <Route path="/phrases" element={<PhrasesPage />} />
+          <Route path="/listening" element={<ListeningPage />} />
+        </Routes>
       </div>
     </div>
   );

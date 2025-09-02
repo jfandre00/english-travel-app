@@ -23,7 +23,7 @@ export default function Login({ onLogin, onSkip, loginFailed }) {
       <form onSubmit={handleSubmit}>
         <input
           type="text"
-          placeholder="coloque kennedy p/ acessar"
+          placeholder="entre kennedy p/ acessar"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           style={{ padding: "8px", fontSize: "16px" }}

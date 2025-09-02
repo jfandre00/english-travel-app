@@ -19,12 +19,32 @@
 }
 
 .favorite-card {
+  /* Estilos originais */
   background-color: #007bff;
   color: white;
   padding: 0.5rem;
   border-radius: 5px;
   font-weight: bold;
   user-select: none;
+  cursor: pointer;
+
+  /* Estilos adicionados para resetar a aparência do botão */
+  border: none;
+  font-family: inherit;
+  width: 100%;
+  font-size: inherit;
+}
+
+.active-favorite-card {
+  background-color: #b30000;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.marked-for-deletion {
+  background-color: #555;
+  opacity: 0.7;
+  border: 2px dashed white;
+  transform: scale(0.95);
 }
 
 .word-button-grid {

@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  forwardRef,
+  useImperativeHandle,
+} from "react";
 import { wordList } from "../data/wordList";
 import "./FavoriteWords.css";
 
@@ -7,34 +13,72 @@ function getRandomWords(arr, n) {
   return shuffled.slice(0, n);
 }
 
-export default function FavoriteWords({ currentUser }) {
+const FavoriteWords = forwardRef(({ currentUser, isEditing }, ref) => {
   const [favorites, setFavorites] = useState([]);
   const [newWords, setNewWords] = useState([]);
+  const [activeWord, setActiveWord] = useState(null);
+  const [wordsToDelete, setWordsToDelete] = useState([]);
 
-  // Ref para controlar se é a renderização inicial
   const isInitialMount = useRef(true);
+  const timeoutRef = useRef(null);
 
-  // Chave específica por usuário no localStorage
   const storageKey = `favorite-words-${currentUser}`;
 
-  // Efeito 1: CARREGAR os dados do localStorage (apenas quando o usuário muda)
+  useImperativeHandle(ref, () => ({
+    saveChanges() {
+      const newFavorites = favorites.filter(
+        (word) => !wordsToDelete.includes(word)
+      );
+      setFavorites(newFavorites);
+      setWordsToDelete([]);
+    },
+  }));
+
+  const handleFavoriteClick = (word) => {
+    if (isEditing) {
+      setWordsToDelete((prev) =>
+        prev.includes(word)
+          ? prev.filter((w) => w !== word)
+          : [...prev, word]
+      );
+    } else {
+      playPronunciation(word);
+    }
+  };
+
+  const playPronunciation = (word) => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    setActiveWord(word);
+    const utterance = new SpeechSynthesisUtterance(word);
+    utterance.lang = "en-US";
+    window.speechSynthesis.speak(utterance);
+    timeoutRef.current = setTimeout(() => {
+      setActiveWord(null);
+      timeoutRef.current = null;
+    }, 2000);
+  };
+
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem(storageKey)) || [];
     setFavorites(saved);
   }, [storageKey]);
 
-  // Efeito 2: SALVAR os dados, mas pulando a primeira vez
   useEffect(() => {
-    // Se for a renderização inicial, nós pulamos o salvamento.
     if (isInitialMount.current) {
-      isInitialMount.current = false; // Nas próximas vezes, não será mais a inicial
+      isInitialMount.current = false;
     } else {
-      // A partir da segunda renderização, qualquer mudança em 'favorites' será salva.
       localStorage.setItem(storageKey, JSON.stringify(favorites));
     }
-  }, [favorites]); // Note que este efeito só depende de 'favorites'
+  }, [favorites]);
 
-  // Efeito 3: Gerar novas palavras quando os favoritos mudam
+  useEffect(() => {
+    if (!isEditing) {
+      setWordsToDelete([]);
+    }
+  }, [isEditing]);
+
   useEffect(() => {
     const availableWords = wordList.filter((w) => !favorites.includes(w));
     const selected = getRandomWords(availableWords, 20);
@@ -49,7 +93,11 @@ export default function FavoriteWords({ currentUser }) {
 
   return (
     <div className="container">
-      <h3 style={{ marginBottom: 10 }}>Palavras favoritas</h3>
+      <h3 style={{ marginBottom: 10 }}>
+        {isEditing
+          ? "Selecione as palavras para remover"
+          : "Palavras favoritas (clique para ouvir)"}
+      </h3>
       <div className="favorites-grid">
         {favorites.length === 0 && (
           <p className="empty-message">
@@ -57,9 +105,22 @@ export default function FavoriteWords({ currentUser }) {
           </p>
         )}
         {favorites.map((word) => (
-          <div key={word} className="favorite-card">
+          <button
+            key={word}
+            className={`
+              favorite-card 
+              ${activeWord === word ? "active-favorite-card" : ""}
+              ${
+                isEditing && wordsToDelete.includes(word)
+                  ? "marked-for-deletion"
+                  : ""
+              }
+            `}
+            onClick={() => handleFavoriteClick(word)}
+            type="button"
+          >
             {word}
-          </div>
+          </button>
         ))}
       </div>
 
@@ -80,4 +141,6 @@ export default function FavoriteWords({ currentUser }) {
       </div>
     </div>
   );
-}
+});
+
+export default FavoriteWords;
