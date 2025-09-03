@@ -2,14 +2,14 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "./Header.css";
 
-export default function Header() {
+// ALTERADO: Recebendo a prop 'isLoggedIn'
+export default function Header({ isLoggedIn }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  // Fecha o menu ao clicar em um link
   const handleLinkClick = () => {
     setIsMenuOpen(false);
   };
@@ -17,8 +17,8 @@ export default function Header() {
   return (
     <header className="header">
       <div className="logo">
-        <Link to="/" onClick={handleLinkClick}>
-          English for Travel
+        <Link to="/" onClick={handleLinkClick} style={{textDecoration: "none", color: "#FDC638", fontWeight: "bold"}}>
+          Teacher Denise's App
         </Link>
       </div>
 
@@ -27,9 +27,13 @@ export default function Header() {
       </button>
 
       <nav className={`nav ${isMenuOpen ? "open" : ""}`}>
-        <Link to="/" onClick={handleLinkClick}>
-          Início
-        </Link>
+        {/* ALTERADO: Este link só aparece se o usuário for VIP (isLoggedIn === true) */}
+        {isLoggedIn && (
+          <Link to="/" onClick={handleLinkClick} style={{color: "#FDC638", fontWeight: "bold"}}>
+            Palavras Favoritas
+          </Link>
+        )}
+
         <Link to="/words" onClick={handleLinkClick}>
           Palavras & Flashcards
         </Link>

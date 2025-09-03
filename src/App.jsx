@@ -67,7 +67,7 @@ export default function App() {
 
   return (
     <div className="app-container">
-      <Header />
+      <Header isLoggedIn={isLoggedIn} />
       <div style={{ paddingTop: "80px" }}>
         
         {skipLogin && (
