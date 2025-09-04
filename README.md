@@ -1,9 +1,18 @@
-Projeto de Bloco FrontEnd (React Web)
-Teacher Denise's English Travel App
+# Projeto de Bloco FrontEnd (React Web)
+## Teacher Denise's English Travel App
 
-Este é um aplicativo de aprendizado de idiomas focado em vocabulário para viagens, desenvolvido com React.
+Este projeto simula um aplicativo de aprendizado de inglês para situações de viagem. Ele contém vocabulário temático, exemplos práticos e funcionalidades para auxiliar o estudante a se preparar para viagens internacionais.
 
-Como Executar o Projeto Localmente
+---
+
+## 🚀 Deploy Online
+Você pode acessar a aplicação diretamente no link abaixo, sem precisar instalar nada:
+
+👉 [Teacher Denise's English Travel App - Vercel](https://teacher-denise-app-projeto-bloco.vercel.app/)
+
+---
+
+## 📥 Como Executar o Projeto Localmente
 Siga os passos abaixo para baixar e rodar a aplicação em sua máquina.
 
 Pré-requisitos
